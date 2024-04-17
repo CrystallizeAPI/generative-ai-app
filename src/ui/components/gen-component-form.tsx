@@ -25,12 +25,12 @@ export const GenComponentForm: React.FC<{
     if (type === 'contentChunk') {
         const suffledColorMap = colorMap.sort(() => Math.random() - 0.5);
         return (
-            <div key={component.componentId} className="space-y-4">
+            <div key={component.componentId} className="space-y-4 p-4 my-4">
                 {(component.content as ContentChunkContent)?.chunks.map((chunk, index) => {
                     const color = suffledColorMap[index % colorMap.length];
                     return (
                         <div key={index} className={`${color.bg} pl-2 pt-4 rounded-md`}>
-                            <div className="flex capitalize h-7 pb-4 items-center font-medium text-sm gap-2">
+                            <div className="flex flex-col capitalize h-7 px-2 pb-4 font-medium text-sm gap-2">
                                 <div className="-mr-1">{type}</div>
                                 <span className={`font-medium text-xs ${color.text}`}>
                                     {component?.componentId} {`#${index + 1}`}
@@ -66,7 +66,7 @@ export const GenComponentForm: React.FC<{
         allowedTypes.includes((component?.content as ComponentChoiceContent)?.selectedComponent.type)
     ) {
         return (
-            <div className="pl-2 pt-4 rounded-md bg-purple-100" key={component.componentId}>
+            <div className="rounded-md bg-purple-100 space-y-4 px-4 my-4" key={component.componentId}>
                 <div className="flex capitalize h-7 pb-4 items-center font-medium text-sm gap-2">
                     <div className="-mr-1"> {type}</div>
                     <span className="font-medium text-xs text-purple-500">{component?.componentId}</span>
@@ -117,12 +117,19 @@ export const InnerForm: React.FC<{
 
     return (
         <fetcher.Form method="post">
-            <div className="p-4 my-4">
-                <span className="font-bold">{component.name}</span>
-                {fetcher.state === 'submitting' && <div>Generating...</div>}
-                <div className="flex flex-col">
-                    <p>Prompt: </p>
-                    <TextareaAutosize rows={5} cols={60} name="prompt" className="" defaultValue="" />
+            <div className="p-4">
+                <span className="italic font-normal text-xs">{component.name}</span>
+                <div className="flex flex-col mt-2">
+                    <TextareaAutosize
+                        rows={5}
+                        cols={60}
+                        name="prompt"
+                        className={`!bg-[#fff] w-full p-4 min-h-[140px] text-sm ${
+                            fetcher.state === 'submitting' ? 'cursor-not-allowed' : 'cursor-text'
+                        }`}
+                        defaultValue=""
+                        placeholder="Please enter a prompt..."
+                    />
                     <input
                         type="hidden"
                         name="componentId"
@@ -130,9 +137,14 @@ export const InnerForm: React.FC<{
                     />
                     <button
                         type="submit"
-                        className="bg-cyan-50 hover:bg-cyan-200 text-white font-bold py-2 px-4 rounded"
+                        className={`
+                         w-full p-4 text-sm font-medium bg-cyan-50 text-cyan-800 hover:bg-cyan-200
+                        ${fetcher.state === 'submitting' ? 'cursor-not-allowed' : 'cursor-pointer'}
+                    `}
+                        disabled={fetcher.state === 'submitting'}
+                        aria-label="Generate content"
                     >
-                        Generate
+                        {fetcher.state === 'submitting' ? 'Generating...' : 'Generate'}
                     </button>
                 </div>
             </div>
